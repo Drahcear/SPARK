@@ -1,5 +1,5 @@
-import MessageUtils.Message
-import MessageUtils.Citizen
+import MessageUtils.{Citizen, Message, send}
+
 import scala.collection.mutable._
 import net.liftweb.json._
 import net.liftweb.json.Serialization.write
@@ -22,6 +22,7 @@ object Main {
   def main(args: Array[String]): Unit = {
     println("Hello world!")
     println(generateJsonFromMessage(generateMessage()))
+    send("Drh", generateJsonFromMessage(generateMessage()))
   }
 
   def generateJsonFromMessage(message: Message): String = {

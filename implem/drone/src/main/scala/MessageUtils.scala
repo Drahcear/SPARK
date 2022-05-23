@@ -5,6 +5,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.producer.RecordMetadata
+import com.google.gson._
 
 import java.time.Duration
 import scala.collection.JavaConverters._
@@ -25,6 +26,11 @@ object MessageUtils {
                     Login : String,
                     PeaceScore : Int
                     )
+
+  def parseFromJson(lines:Iterator[String]):List[Citizen] = {
+    val gson = new Gson()
+    lines.map(line => gson.fromJson(line, classOf[Citizen])).toList
+  }
 
   def main(args: Array[String]): Unit = {
     val topicName = "topic1"

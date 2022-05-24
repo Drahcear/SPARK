@@ -1,6 +1,5 @@
 import MessageUtils.Message
 import MessageUtils.Citizen
-import MessageUtils.parseFromJson
 
 import scala.collection.mutable._
 import net.liftweb.json._
@@ -25,9 +24,7 @@ import java.util.Properties
 object Main {
 
   def main(args: Array[String]): Unit = {
-    println("Hello world!")
     println(generateJsonFromMessage(generateMessage()))
-//    println(scala.util.Random.nextInt(99) + 1)
   }
 
   def generateJsonFromMessage(message: Message): String = {
@@ -36,12 +33,15 @@ object Main {
 
   def generateMessage() : Message = {
     val citizens = generateCitizens()
-    println(citizens.length)
-    Message("1111", "ici", 150000, citizens, List("Marre", "Intellij", "code", "Lib", "Nul"))
+    val wordList = generateWordList() //recup the (word, score) List
+    val peaceScore = wordList.map(x => x._2).sum / wordList.length
+
+    Message("1111", "ici", 150000, citizens.map(x => Citizen(x.Name, x.FirstName, x.Login, peaceScore)), wordList.map(x => x._1))
   }
 
-  def generateWordList() : List[String] = {
-    ???
+  def generateWordList() : List[(String,Int)] = {
+    Random.shuffle(Source.fromFile("Discussions.txt").getLines().flatMap(_.split(" ")))
+      .slice(0, scala.util.Random.nextInt(300) + 1).map(x => (x, scala.util.Random.nextInt(100))).toList
   }
 
   def generateCitizens() : List[Citizen] = {
@@ -49,6 +49,5 @@ object Main {
     val citizen = MessageUtils.parseFromJson(lines)
     Random.shuffle(citizen).slice(0, scala.util.Random.nextInt(99) + 1)
   }
-
 
 }

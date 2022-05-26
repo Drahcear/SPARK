@@ -1,6 +1,11 @@
+import WordCount.wordCount
 import org.apache.avro.Schema
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.types._
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
+
 object Main {
   def main(args: Array[String]): Unit = {
     val input_blob_path = "topics/JsonTopic15/partition=0/"
@@ -21,6 +26,7 @@ object Main {
       .option("avroSchema", schema.toString)
       .format("avro")
       .load(s"wasbs://${containerName}@${storageAccountName}.blob.core.windows.net/${input_blob_path}")
-    df.show()
+
+    wordCount(df)
   }
 }

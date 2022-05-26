@@ -4,12 +4,17 @@ import org.apache.avro.Schema
 import org.apache.avro.generic.GenericData
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import org.apache.avro.generic.GenericRecord
+import org.apache.avro.io.{BinaryEncoder, EncoderFactory}
+import org.apache.avro.specific.SpecificDatumWriter
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord, RecordMetadata}
+import org.apache.kafka.common.serialization.StringDeserializer
+
+import java.io.ByteArrayOutputStream
 
 object MessageUtils {
 
   case class Message (
-                       id : String,
+                       id : Int,
                        location : String,
                        Date : Int,
                        Citizens : List[Citizen],
@@ -29,12 +34,12 @@ object MessageUtils {
   }
 
 
-  def createCitizenRecord(name: String, firstName : String, peacescore : Int, schema : String) : GenericRecord = {
-    val citizenSchema : Schema = new Schema.Parser().parse(schema)
-    val record = new GenericData.Record(citizenSchema)
+  def createCitizenRecord(name: String, firstName : String, login : String ,peacescore : Int, schema : Schema) : GenericRecord = {
+    val record = new GenericData.Record(schema)
     record.put("Name", name)
     record.put("FirstName", firstName)
     record.put("PeaceScore", peacescore)
+    record.put("Login", login)
     record
   }
 
@@ -42,37 +47,30 @@ object MessageUtils {
     val props = new Properties()
     props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
     props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-      classOf[KafkaAvroSerializer].getCanonicalName)
+      "io.confluent.kafka.serializers.KafkaAvroSerializer")
     props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-      classOf[KafkaAvroSerializer].getCanonicalName)
+      "io.confluent.kafka.serializers.KafkaAvroSerializer")
     props.put("schema.registry.url", "http://localhost:8081")
     val producer = new KafkaProducer[String, GenericRecord](props)
+
     val key = "key1"
-
-    val userSchema = "{\n  \"name\": \"MyClass\",\n  \"type\": \"record\",\n  \"namespace\": \"com.acme.avro\",\n  \"fields\": [\n    {\n      \"name\": \"id\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"location\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"Date\",\n      \"type\": \"int\"\n    },\n    {\n      \"name\": \"Citizens\",\n      \"type\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"name\": \"Citizens_record\",\n          \"type\": \"record\",\n          \"fields\": [\n            {\n              \"name\": \"Name\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"FirstName\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"Login\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"PeaceScore\",\n              \"type\": \"int\"\n            }\n          ]\n        }\n      }\n    },\n    {\n      \"name\": \"Words\",\n      \"type\": {\n        \"type\": \"array\",\n        \"items\": \"string\"\n      }\n    }\n  ]\n}"
-    val citizenString = "{\n  \"name\": \"MyClass\",\n  \"type\": \"record\",\n  \"namespace\": \"com.acme.avro\",\n  \"fields\": [\n    {\n      \"name\": \"Name\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"FirstName\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"Login\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"PeaceScore\",\n      \"type\": \"int\"\n    }\n  ]\n}"
-
+    val userSchema = "{\n  \"name\": \"Message\",\n  \"type\": \"record\",\n  \"namespace\": \"com.acme.avro\",\n  \"fields\": [\n    {\n      \"name\": \"id\",\n      \"type\": \"int\"\n    },\n    {\n      \"name\": \"location\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"Date\",\n      \"type\": \"int\"\n    },\n    {\n      \"name\": \"Citizens\",\n      \"type\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"name\": \"Citizen\",\n          \"type\": \"record\",\n          \"fields\": [\n            {\n              \"name\": \"Name\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"FirstName\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"Login\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"PeaceScore\",\n              \"type\": \"int\"\n            }\n          ]\n        }\n      }\n    },\n    {\n      \"name\": \"Words\",\n      \"type\": {\n        \"type\": \"array\",\n        \"items\": \"string\"\n      }\n    }\n  ]\n}"
     val schema: Schema = new Schema.Parser().parse(userSchema)
-    val words = List("ah", "bon", "maintenant", "c'est", "comme", "ca")
-
+    val arraySchema = Schema.createArray(schema.getField("Citizens").schema().getElementType())
+    val wordsSchema = Schema.createArray(schema.getField("Words").schema().getElementType())
     val avroRecord = new GenericData.Record(schema)
-    val listUser = List(("Grand", "Jacky", 100), ("Grand","Steven",100), ("Grand", "Richard", 100))
-    val avroCitizens = listUser.map(x => createCitizenRecord(x._1,x._2, x._3, citizenString))
-
-    avroRecord.put("id", 667)
-    avroRecord.put("location", "dzdzdzedzd")
-    avroRecord.put("Date", 21212)
-    avroRecord.put("Citizens", avroCitizens)
-    avroRecord.put("Words", words)
-
-    //val writer = new SpecificDatumWriter[GenericRecord](schema)
-    //val out = new ByteArrayOutputStream()
-    //val encoder: BinaryEncoder = EncoderFactory.get().binaryEncoder(out, null)
-    //writer.write(avroRecord, encoder)
-    //encoder.flush()
-    //out.close()
-    //val serializedBytes: Array[Byte] = out.toByteArray()
-    val record = new ProducerRecord[String, GenericRecord]("b", key, avroRecord)
+    val citizenRecord = new GenericData.Record(schema.getField("Citizens").schema().getElementType())
+    val message = Main.generateMessage()
+    avroRecord.put("id", message.id)
+    avroRecord.put("location", message.location)
+    avroRecord.put("Date", message.Date)
+    val GenericArray = new GenericData.Array[GenericRecord](message.Citizens.size, arraySchema)
+    val GenericArrayWords = new GenericData.Array[String](message.Citizens.size, wordsSchema)
+    message.Words.foreach(x => GenericArrayWords.add(x))
+    message.Citizens.map(x=> createCitizenRecord(x.Name, x.FirstName, x.Login, x.PeaceScore, schema.getField("Citizens").schema().getElementType())).foreach(y => GenericArray.add(y))
+    avroRecord.put("Citizens", GenericArray)
+    avroRecord.put("Words", GenericArrayWords)
+    val record = new ProducerRecord[String, GenericRecord]("JsonTopic15", key, avroRecord)
 
     producer.send(record)
     producer.flush()

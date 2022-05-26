@@ -36,7 +36,7 @@ object Main {
     val wordList = generateWordList() //recup the (word, score) List
     val peaceScore = wordList.map(x => x._2).sum / wordList.length
 
-    Message("1111", "ici", 150000, citizens.map(x => Citizen(x.Name, x.FirstName, x.Login, peaceScore)), wordList.map(x => x._1))
+    Message(1111, "ici", 150000, citizens.map(x => Citizen(x.Name, x.FirstName, x.Login, peaceScore)), wordList.map(x => x._1))
   }
 
   def generateWordList() : List[(String,Int)] = {

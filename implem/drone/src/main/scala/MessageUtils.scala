@@ -14,9 +14,9 @@ import java.io.ByteArrayOutputStream
 object MessageUtils {
 
   case class Message (
-                       id : Int,
+                       id : String,
                        location : String,
-                       Date : Int,
+                       Date : Long,
                        Citizens : List[Citizen],
                        Words : List[String]
                      )

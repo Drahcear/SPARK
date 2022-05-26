@@ -35,8 +35,9 @@ object Main {
     val citizens = generateCitizens()
     val wordList = generateWordList() //recup the (word, score) List
     val peaceScore = wordList.map(x => x._2).sum / wordList.length
-
-    Message(1111, "ici", 150000, citizens.map(x => Citizen(x.Name, x.FirstName, x.Login, peaceScore)), wordList.map(x => x._1))
+    val pos = (48.81568490222558 + scala.util.Random.nextDouble()) + "," + (2.363076 + scala.util.Random.nextDouble())
+    
+    Message("drone_" + (scala.util.Random.nextInt(499) + 1) , pos, System.currentTimeMillis, citizens.map(x => Citizen(x.Name, x.FirstName, x.Login, peaceScore)), wordList.map(x => x._1))
   }
 
   def generateWordList() : List[(String,Int)] = {

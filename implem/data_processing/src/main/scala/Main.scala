@@ -35,5 +35,7 @@ object Main {
     getSummary(df)
 
     getBadLocation(df, 270)
+
+    getTimestamp(df).show()
   }
 }

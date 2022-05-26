@@ -1,5 +1,5 @@
 import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.functions.{array, asc, col, desc, explode, lit, udf}
+import org.apache.spark.sql.functions.{array, asc, col, date_format, desc, explode, from_unixtime, lit, udf}
 
 object Utils {
   def wordCount(df: DataFrame): Unit = {
@@ -46,5 +46,10 @@ object Utils {
       .count()
       .sort(desc("count"))
       .show()
+  }
+
+  def getTimestamp(df: DataFrame) : DataFrame = {
+    df.withColumn("Timestamp", from_unixtime(col("Date"), "yyyy-MM-dd HH:mm:ss"))
+      .withColumn("week_day_abb", date_format(col("Timestamp"), "E"))
   }
 }

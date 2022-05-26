@@ -60,7 +60,7 @@ object MessageUtils {
     val wordsSchema = Schema.createArray(schema.getField("Words").schema().getElementType())
     val avroRecord = new GenericData.Record(schema)
     val citizenRecord = new GenericData.Record(schema.getField("Citizens").schema().getElementType())
-    val message = Main.generateMessage()
+    val message = Main.generateMessage()._2
     avroRecord.put("id", message.id)
     avroRecord.put("location", message.location)
     avroRecord.put("Date", message.Date)

@@ -24,20 +24,23 @@ import java.util.Properties
 object Main {
 
   def main(args: Array[String]): Unit = {
-    println(generateJsonFromMessage(generateMessage()))
+    val msg = generateMessage()
+    Producer.send(generateJsonFromMessage(msg._2), msg._1)
   }
 
   def generateJsonFromMessage(message: Message): String = {
     write(message)(DefaultFormats)
+
   }
 
-  def generateMessage() : Message = {
+  def generateMessage() : (String, Message) = {
     val citizens = generateCitizens()
     val wordList = generateWordList() //recup the (word, score) List
     val peaceScore = wordList.map(x => x._2).sum / wordList.length
     val pos = (48.81568490222558 + scala.util.Random.nextDouble()) + "," + (2.363076 + scala.util.Random.nextDouble())
-    
-    Message("drone_" + (scala.util.Random.nextInt(499) + 1) , pos, System.currentTimeMillis, citizens.map(x => Citizen(x.Name, x.FirstName, x.Login, peaceScore)), wordList.map(x => x._1))
+    val id = "drone_" + (scala.util.Random.nextInt(499) + 1)
+
+    (id , Message( id , pos, System.currentTimeMillis, citizens.map(x => Citizen(x.Name, x.FirstName, x.Login, peaceScore)), wordList.map(x => x._1)))
   }
 
   def generateWordList() : List[(String,Int)] = {

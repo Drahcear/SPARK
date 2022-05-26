@@ -1,10 +1,11 @@
-import WordCount.wordCount
+import Utils._
 import org.apache.avro.Schema
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.types._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.functions.udf
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -28,5 +29,7 @@ object Main {
       .load(s"wasbs://${containerName}@${storageAccountName}.blob.core.windows.net/${input_blob_path}")
 
     wordCount(df)
+
+
   }
 }

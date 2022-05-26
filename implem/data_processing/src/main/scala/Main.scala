@@ -30,6 +30,10 @@ object Main {
 
     wordCount(df)
 
+    getLowestScore(df)
 
+    getSummary(df)
+
+    getBadLocation(df, 270)
   }
 }

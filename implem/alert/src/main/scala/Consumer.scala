@@ -1,3 +1,5 @@
+import Message.sendPeaceMaker
+
 import java.util.Properties
 import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -25,7 +27,8 @@ object Consumer {
     case n => {
       val records: ConsumerRecords[String, String] = consumer.poll(Duration.ofSeconds(5))
       println(s"${records.count()} messages")
-      records.asScala.foreach { record => println(s"offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}") }
+      // records.asScala.foreach { record => println(s"offset = ${record.offset()}, key = ${record.key()}, value = ${record.value()}") }
+      records.asScala.foreach { record => sendPeaceMaker(record.value()) }
       consumer.commitSync()
       infinite_consume(n, consumer)
     }

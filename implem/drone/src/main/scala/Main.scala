@@ -25,13 +25,7 @@ import java.util.Properties
 object Main {
 
   def main(args: Array[String]): Unit = {
-    // infinite_produce(100)
-    val words = generateWordList(50)
-    val citizens = generateCitizens(50)
-    val zipped = citizens.zip(words)
-    zipped.foreach(x => println(s"${x._1}, ${x._2._1}"))
-    val list = zipped.map(x => Citizen(x._1.Name, x._1.FirstName, x._1.Login, x._2._2))
-    list.foreach(x => println(x))
+    infinite_produce(100)
   }
 
   def infinite_produce[T](n: Int) :Option[T] = n match {
@@ -55,8 +49,9 @@ object Main {
     val peaceScore = wordList.map(x => x._2).sum / wordList.length
     val pos = (48.81568490222558 + scala.util.Random.nextDouble()) + "," + (2.363076 + scala.util.Random.nextDouble())
     val id = "drone_" + (scala.util.Random.nextInt(499) + 1)
-
-    (id , Message( id , pos, System.currentTimeMillis, citizens.map(x => Citizen(x.Name, x.FirstName, x.Login, peaceScore)), wordList.map(x => x._1)))
+    val zipped = citizens.zip(wordList) // each citizen says one word
+    // Update each citizen peacescore by the score of the word
+    (id , Message( id , pos, System.currentTimeMillis, zipped.map(x => Citizen(x._1.Name, x._1.FirstName, x._1.Login, x._2._2)), wordList.map(x => x._1)))
   }
 
   def generateWordList(n : Int) : List[(String,Int)] = {

@@ -24,8 +24,16 @@ import java.util.Properties
 object Main {
 
   def main(args: Array[String]): Unit = {
-    val msg = generateMessage()
-    Producer.send(generateJsonFromMessage(msg._2), msg._1)
+    infinite_produce(100)
+  }
+
+  def infinite_produce[T](n: Int) :Option[T] = n match {
+    case 0 => None
+    case n => {
+      val msg = generateMessage()
+      Producer.send(generateJsonFromMessage(msg._2), msg._1)
+      infinite_produce(n - 1)
+    }
   }
 
   def generateJsonFromMessage(message: Message): String = {

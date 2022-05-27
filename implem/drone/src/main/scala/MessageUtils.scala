@@ -54,13 +54,14 @@ object MessageUtils {
     val producer = new KafkaProducer[String, GenericRecord](props)
 
     val key = "key1"
-    val userSchema = "{\n  \"name\": \"Message\",\n  \"type\": \"record\",\n  \"namespace\": \"com.acme.avro\",\n  \"fields\": [\n    {\n      \"name\": \"id\",\n      \"type\": \"int\"\n    },\n    {\n      \"name\": \"location\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"Date\",\n      \"type\": \"int\"\n    },\n    {\n      \"name\": \"Citizens\",\n      \"type\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"name\": \"Citizen\",\n          \"type\": \"record\",\n          \"fields\": [\n            {\n              \"name\": \"Name\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"FirstName\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"Login\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"PeaceScore\",\n              \"type\": \"int\"\n            }\n          ]\n        }\n      }\n    },\n    {\n      \"name\": \"Words\",\n      \"type\": {\n        \"type\": \"array\",\n        \"items\": \"string\"\n      }\n    }\n  ]\n}"
+    val userSchema = "{\n  \"name\": \"Message\",\n  \"type\": \"record\",\n  \"namespace\": \"com.acme.avro\",\n  \"fields\": [\n    {\n      \"name\": \"id\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"location\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"Date\",\n      \"type\": \"int\"\n    },\n    {\n      \"name\": \"Citizens\",\n      \"type\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"name\": \"Citizen\",\n          \"type\": \"record\",\n          \"fields\": [\n            {\n              \"name\": \"Name\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"FirstName\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"Login\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"PeaceScore\",\n              \"type\": \"int\"\n            }\n          ]\n        }\n      }\n    },\n    {\n      \"name\": \"Words\",\n      \"type\": {\n        \"type\": \"array\",\n        \"items\": \"string\"\n      }\n    }\n  ]\n}"
     val schema: Schema = new Schema.Parser().parse(userSchema)
     val arraySchema = Schema.createArray(schema.getField("Citizens").schema().getElementType())
     val wordsSchema = Schema.createArray(schema.getField("Words").schema().getElementType())
     val avroRecord = new GenericData.Record(schema)
     val citizenRecord = new GenericData.Record(schema.getField("Citizens").schema().getElementType())
-    val message = Main.generateMessage()._2
+    val droneMessage = Main.generateMessage()
+    val message = droneMessage._2
     avroRecord.put("id", message.id)
     avroRecord.put("location", message.location)
     avroRecord.put("Date", message.Date)
@@ -70,7 +71,7 @@ object MessageUtils {
     message.Citizens.map(x=> createCitizenRecord(x.Name, x.FirstName, x.Login, x.PeaceScore, schema.getField("Citizens").schema().getElementType())).foreach(y => GenericArray.add(y))
     avroRecord.put("Citizens", GenericArray)
     avroRecord.put("Words", GenericArrayWords)
-    val record = new ProducerRecord[String, GenericRecord]("JsonTopic15", key, avroRecord)
+    val record = new ProducerRecord[String, GenericRecord]("ae", droneMessage._1, avroRecord)
 
     producer.send(record)
     producer.flush()

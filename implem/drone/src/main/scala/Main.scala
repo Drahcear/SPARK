@@ -1,5 +1,6 @@
 import MessageUtils.Message
 import MessageUtils.Citizen
+import com.google.gson.Gson
 
 import scala.collection.mutable._
 import net.liftweb.json._
@@ -24,7 +25,13 @@ import java.util.Properties
 object Main {
 
   def main(args: Array[String]): Unit = {
-    infinite_produce(100)
+    // infinite_produce(100)
+    val words = generateWordList(50)
+    val citizens = generateCitizens(50)
+    val zipped = citizens.zip(words)
+    zipped.foreach(x => println(s"${x._1}, ${x._2._1}"))
+    val list = zipped.map(x => Citizen(x._1.Name, x._1.FirstName, x._1.Login, x._2._2))
+    list.foreach(x => println(x))
   }
 
   def infinite_produce[T](n: Int) :Option[T] = n match {
@@ -42,8 +49,9 @@ object Main {
   }
 
   def generateMessage() : (String, Message) = {
-    val citizens = generateCitizens()
-    val wordList = generateWordList() //recup the (word, score) List
+    val n = 50
+    val citizens = generateCitizens(n)
+    val wordList = generateWordList(n) //recup the (word, score) List
     val peaceScore = wordList.map(x => x._2).sum / wordList.length
     val pos = (48.81568490222558 + scala.util.Random.nextDouble()) + "," + (2.363076 + scala.util.Random.nextDouble())
     val id = "drone_" + (scala.util.Random.nextInt(499) + 1)
@@ -51,15 +59,19 @@ object Main {
     (id , Message( id , pos, System.currentTimeMillis, citizens.map(x => Citizen(x.Name, x.FirstName, x.Login, peaceScore)), wordList.map(x => x._1)))
   }
 
-  def generateWordList() : List[(String,Int)] = {
+  def generateWordList(n : Int) : List[(String,Int)] = {
     Random.shuffle(Source.fromFile("Discussions.txt").getLines().flatMap(_.split(" ")))
-      .slice(0, scala.util.Random.nextInt(300) + 1).map(x => (x, scala.util.Random.nextInt(100))).toList
+      //.slice(0, scala.util.Random.nextInt(300) + 1).map(x => (x, scala.util.Random.nextInt(100))).toList
+      .slice(0, n).map(x => (x, scala.util.Random.nextInt(100))).toList
   }
 
-  def generateCitizens() : List[Citizen] = {
+  def generateCitizens(n : Int) : List[Citizen] = {
     val lines = Source.fromFile("Citizens.txt").getLines()
     val citizen = MessageUtils.parseFromJson(lines)
-    Random.shuffle(citizen).slice(0, scala.util.Random.nextInt(99) + 1)
+    Random.shuffle(citizen)
+      //.slice(0, scala.util.Random.nextInt(99) + 1)
+      .slice(0, n)
   }
+
 
 }

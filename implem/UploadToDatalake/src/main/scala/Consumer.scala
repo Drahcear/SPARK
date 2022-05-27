@@ -6,15 +6,13 @@ import org.apache.kafka.clients.consumer.ConsumerRecords
 
 import java.time.Duration
 import scala.collection.JavaConverters._
-import scala.util.matching.Regex.Match
-
 object Consumer {
   def config_Consumer(Topic : String) : KafkaConsumer[String, String] = {
     val consumer_props: Properties = new Properties()
     consumer_props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
     consumer_props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, classOf[StringDeserializer].getName)
     consumer_props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, classOf[StringDeserializer].getName)
-    consumer_props.put(ConsumerConfig.GROUP_ID_CONFIG, "AlertConsumer")
+    consumer_props.put(ConsumerConfig.GROUP_ID_CONFIG, "DataLakeConsumer")
     val consumer: KafkaConsumer[String, String] = new KafkaConsumer[String, String](consumer_props)
     consumer.subscribe(List(Topic).asJava)
     consumer
@@ -24,7 +22,7 @@ object Consumer {
     case 0 => None
     case n => {
       val records: ConsumerRecords[String, String] = consumer.poll(Duration.ofSeconds(5))
-      records.asScala.foreach { record => Message.sendPeaceMaker(record.value()) }
+      records.asScala.foreach { record => Producer.Send(Message.parseFromJson(record.value()), record.key()) }
       consumer.commitSync()
       infinite_consume(n, consumer)
     }

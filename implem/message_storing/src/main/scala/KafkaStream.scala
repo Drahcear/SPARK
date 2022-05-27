@@ -21,8 +21,10 @@ object DroneSteam extends App {
     .toSysOut[String, String]
     .withLabel("customerStream")
   textLines.print(sysout)
-  val alertMessage = textLines
-  alertMessage.to("Alert4")
+  //val alertMessage = textLines
+  //val storeDataLake = textLines
+  //alertMessage.to("Alert4")
+  //storeDataLake.to("DataLakeTopic")
   val streams: KafkaStreams = new KafkaStreams(builder.build(), props)
   streams.start()
   println("ready")

@@ -32,9 +32,11 @@ object Utils {
     df5
   }
 
-  def getLowestScore(df: DataFrame): Unit = {
+  def WorstPeaceScoreLocation(df: DataFrame): Unit = {
     val df1 = getScore(df)
-    df1.orderBy(asc("PeaceScore"))
+    df1.withColumn("Timestamp", from_unixtime(col("Date"), "yyyy-MM-dd HH:mm:ss"))
+      .orderBy(asc("PeaceScore"))
+      .select("localisation", "Timestamp", "PeaceScore")
       .show(20)   // Get the row with the lowest score
   }
 

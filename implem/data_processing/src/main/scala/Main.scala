@@ -32,7 +32,7 @@ object Main {
 
     getScore(df).show()
 
-    getLowestScore(df)
+    WorstPeaceScoreLocation(df)
 
     getSummary(df)
 

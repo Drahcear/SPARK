@@ -55,7 +55,7 @@ object Main {
   }
 
   def generateWordList(n : Int) : List[(String,Int)] = {
-    Random.shuffle(Source.fromFile("Discussions.txt").getLines().flatMap(_.split(" ")))
+    Random.shuffle(Source.fromFile("Discussions.txt").getLines().flatMap(_.trim().split(" ")))
       //.slice(0, scala.util.Random.nextInt(300) + 1).map(x => (x, scala.util.Random.nextInt(100))).toList
       .slice(0, n).map(x => (x, scala.util.Random.nextInt(100))).toList
   }

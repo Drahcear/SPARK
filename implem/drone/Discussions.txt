@@ -1,31 +1,18 @@
-    The Digital Revolution is complete. Now, everything begins.
-
-    Creating and giving meaning to the world of tomorrow requires us to be scientifically rigorous, to master ever-changing technologies, and to be willing to act. An acute sense of responsibility is a must, given the scope and impact of software solutions that are being deployed on unprecedented scales.
-
-    That’s where engineers come in.
-
-    Engineering requires us to mobilize a plethora of technological resources, without being controlled by them. Engineering means that we understand the science behind the algorithm, so that we can move beyond the code. Engineering requires us to work in teams, on projects, and to understand what type of business we’re trying to create or work for, and we must respect diversity: diversity is humanity.
-
-    Women and men who are digital experts drive this transformation: they are rigorous, creative, software virtuosos. They are the builders of the 21st century.  At EPITA, our mission is to train these engineers. To amplify their talents, and help them become the best IT engineers of their generation.
-
-    Welcome to EPITA, where we amplify digital talent, and where we embody the best in Computer Science!
-Philippe Dewost, Dean
-
+    The Digital Revolution is complete Now  everything begins
+    Creating and giving meaning to the world of tomorrow requires us to be scientifically rigorous  to master everchanging technologies  and to be willing to act An acute sense of responsibility is a must  given the scope and impact of software solutions that are being deployed on unprecedented scales
+    That’s where engineers come in
+    Engineering requires us to mobilize a plethora of technological resources  without being controlled by them Engineering means that we understand the science behind the algorithm  so that we can move beyond the code Engineering requires us to work in teams  on projects  and to understand what type of business we’re trying to create or work for  and we must respect diversity diversity is humanity
+    Women and men who are digital experts drive this transformation they are rigorous  creative  software virtuosos They are the builders of the 21st century  At EPITA  our mission is to train these engineers To amplify their talents  and help them become the best IT engineers of their generation
+    Welcome to EPITA  where we amplify digital talent  and where we embody the best in Computer Science!
+Philippe Dewost  Dean
 Vision
-
-Since it was founded in 1984, EPITA has demonstrated a strong commitment to internationalization. With a vision of being a school of influence in the digital sector in France, much of EPITA’s internationalization is focused around building a lasting worldwide reputation for excellence and ensuring that all students have some form of multicultural experience, be it in the classroom, through integration with on-campus international students or with their own overseas travel.
-
-EPITA welcomes students from around the world. Currently over 250 international students from more than 50 countries are studying at EPITA. The school provides an experienced advising staff to help answer all questions overseas students may have.
-
-We also provide a wide range of services and programs to help international students adjust to cultural life in Paris.From a week-long orientation program to ongoing programs to academic support for success, is here to help our international students have a rewarding and fulfilling experience while at EPITA.
-
-Since 2007, international mobility has become mandatory at EPITA. 100% of the students must spend at least one semester abroad during their studies, either in a university or through an internship in a company. The goal is to train future engineers in intercultural management, to prepare them to work in a global context, where adaptability and open-mindedness have become key assets. Students are encouraged to study abroad during the second year (undergraduate level). The International team is here to facilitate education abroad for EPITA students.
-
-As a computer science and software engineering school, EPITA has dedicated the resources needed to fully develop and support association life. This includes a dedicated space for associations on our Paris campus, a true “business salon” that promotes association life.
-
-Taking on an association leadership role is a significant commitment: EPITA provides students with the tools and support they need, including training sessions for association leaders, a team of instructors who provide coaching, etc.
-
-Because students are the heart of our school, EPITA – the computer science and software engineering school – allows students to freely and spontaneously express their creativity. And it works! The evidence: Each year, EPITA student associations organize nearly 400 events!
+Since it was founded in 1984  EPITA has demonstrated a strong commitment to internationalization With a vision of being a school of influence in the digital sector in France  much of EPITA’s internationalization is focused around building a lasting worldwide reputation for excellence and ensuring that all students have some form of multicultural experience  be it in the classroom  through integration with oncampus international students or with their own overseas travel
+EPITA welcomes students from around the world Currently over 250 international students from more than 50 countries are studying at EPITA The school provides an experienced advising staff to help answer all questions overseas students may have
+We also provide a wide range of services and programs to help international students adjust to cultural life in ParisFrom a weeklong orientation program to ongoing programs to academic support for success  is here to help our international students have a rewarding and fulfilling experience while at EPITA
+Since 2007  international mobility has become mandatory at EPITA 100% of the students must spend at least one semester abroad during their studies  either in a university or through an internship in a company The goal is to train future engineers in intercultural management  to prepare them to work in a global context  where adaptability and openmindedness have become key assets Students are encouraged to study abroad during the second year (undergraduate level) The International team is here to facilitate education abroad for EPITA students
+As a computer science and software engineering school  EPITA has dedicated the resources needed to fully develop and support association life This includes a dedicated space for associations on our Paris campus  a true “business salon” that promotes association life
+Taking on an association leadership role is a significant commitment EPITA provides students with the tools and support they need  including training sessions for association leaders  a team of instructors who provide coaching  etc
+Because students are the heart of our school  EPITA – the computer science and software engineering school – allows students to freely and spontaneously express their creativity And it works! The evidence Each year  EPITA student associations organize nearly 400 events!
 word count from Wikipedia the free encyclopedia
 the word count is the number of words in a document or passage of text Word counting may be needed when a text
 is required to stay within certain numbers of words This may particularly be the case in academia legal
@@ -69,4 +56,4 @@ typical mystery novel might be in the to word range while a thriller could be ov
 The Science Fiction and Fantasy Writers of America specifies word lengths for each category of its Nebula award categories
 Classification	Word count Novel over words Novella to words Novelette to words Short story under words
 In non fiction The acceptable length of an academic dissertation varies greatly dependent predominantly on the subject
-Numerous American universities limit Ph.D. dissertations to at most words barring special permission for exceeding this limit
+Numerous American universities limit PhD dissertations to at most words barring special permission for exceeding this limit

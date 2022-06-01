@@ -8,6 +8,7 @@ object Utils {
                       Login : String,
                       PeaceScore : Int
                     )
+
   def wordCount(df: DataFrame): Unit = {
     println("Top 20 most used words :")
     val list = df.select("Words")
@@ -21,22 +22,22 @@ object Utils {
   }
 
   def getScore(df: DataFrame): DataFrame = {
-    val length_udf = udf((l:Seq[Citizen]) => l.map(x => (x, 1)))   // Give a value to the word
-    val df2 = df.withColumn("Length", length_udf(col("Citizens")))
-    val reduce_udf = udf((l:Seq[(Citizen,Integer)]) => l.reduce((x, y) => (x._1 ,x._2 + y._2))._2)  // Get de score
-    val df3 = df2.withColumn("Length", reduce_udf(col("Length")))
-    val tuple_udf = udf((l:Seq[Citizen]) => l.map(x => (x.Login, x.PeaceScore)))
-    val df4 = df3.withColumn("PeaceScore", tuple_udf(col("Citizens")))
-    val score_udf2 = udf((l:Seq[(String, Integer)]) => l.reduce((x, y) => ("Score", x._2 + y._2))._2)
-    val df5 = df4.withColumn("PeaceScore", score_udf2(col("PeaceScore"))/col("Length"))
-    df5
+    val lengthUdf = udf((l:Seq[Citizen]) => l.map(x => (x, 1)))   // Give a value to the word
+    val reduceUdf = udf((l:Seq[(Citizen,Integer)]) => l.reduce((x, y) => (x._1 ,x._2 + y._2))._2)  // Get de score
+    val tupleUdf = udf((l:Seq[Citizen]) => l.map(x => (x.Login, x.PeaceScore)))
+    val scoreUdf = udf((l:Seq[(String, Integer)]) => l.reduce((x, y) => ("Score", x._2 + y._2))._2)
+
+    df.withColumn("Length", lengthUdf(col("Citizens")))
+      .withColumn("Length", reduceUdf(col("Length")))
+      .withColumn("PeaceScore", tupleUdf(col("Citizens")))
+      .withColumn("PeaceScore", scoreUdf(col("PeaceScore"))/col("Length"))
   }
 
-  def WorstPeaceScoreLocation(df: DataFrame): Unit = {
+  def worstPeaceScoreLocation(df: DataFrame): Unit = {
     val df1 = getScore(df)
     df1.withColumn("Timestamp", from_unixtime(col("Date"), "yyyy-MM-dd HH:mm:ss"))
       .orderBy(asc("PeaceScore"))
-      .select("localisation", "Timestamp", "PeaceScore")
+      .select("location", "Timestamp", "PeaceScore")
       .show(20)   // Get the row with the lowest score
   }
 
@@ -76,8 +77,8 @@ object Utils {
 
   def getTimestamp(df: DataFrame) : DataFrame = {
     val df1 = getScore(df)
-    val df2 = df1.withColumn("Timestamp", from_unixtime(col("Date"), "yyyy-MM-dd HH:mm:ss"))
+    df1.withColumn("Timestamp", from_unixtime(col("Date"), "yyyy-MM-dd HH:mm:ss"))
       .withColumn("week_day", date_format(col("Timestamp"), "E"))
-    df2.where(col("PeaceScore") < 50).groupBy("week_day").count()
+      .where(col("PeaceScore") < 50).groupBy("week_day").count()
   }
 }

@@ -28,8 +28,6 @@ object Main {
       .format("avro")
       .load(s"wasbs://${containerName}@${storageAccountName}.blob.core.windows.net/${input_blob_path}")
 
-    df.printSchema()
-
     wordCount(df)
 
     getScore(df).show()
@@ -38,7 +36,9 @@ object Main {
 
     getSummary(df)
 
-    getBadLocation(df, 50)
+    getBadCitizen(df)
+
+    getGoodCitizen(df)
 
     getTimestamp(df).show()
   }

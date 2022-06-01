@@ -44,20 +44,38 @@ object Utils {
       .show()
   }
 
-  def getBadLocation(df: DataFrame, seuil: Int): Unit = {
+  def getBadCitizen(df: DataFrame): Unit = {
     val df1 = getScore(df)
-    // Duplique des lignes (à enlever pour plus tard)
-    //val dup_df = df1.withColumn("new_col", explode(array((1 until 4).map(lit): _*))).selectExpr(df.columns: _*)
     val df_sc = getScore(df1)
-    df_sc.where(col("PeaceScore") <= seuil)
-      .groupBy("location")
-      .count()
-      .sort(desc("count"))
+    val tuple_citizen = udf((l:Seq[Citizen]) => l.map(x => (x.Login, x.PeaceScore)))
+    val worst_citizen = udf((l:Seq[(String, Integer)]) => Array(l.minBy(_._2)))
+    val score = udf((l:Seq[(String, Integer)]) => l.map(x => x._2))
+    df_sc.withColumn("Worst_citizen", tuple_citizen(col("Citizens")))
+      .withColumn("Worst_citizen", worst_citizen(col("Worst_citizen")))
+      .withColumn("Score", score(col("Worst_citizen")))
+      .orderBy(asc("Score"))
+      .select("id", "location", "Date", "Worst_citizen", "Score")
+      .show()
+  }
+
+  def getGoodCitizen(df: DataFrame): Unit = {
+    val df1 = getScore(df)
+    val df_sc = getScore(df1)
+    val tuple_citizen = udf((l:Seq[Citizen]) => l.map(x => (x.Login, x.PeaceScore)))
+    val best_citizen = udf((l:Seq[(String, Integer)]) => Array(l.maxBy(_._2)))
+    val score = udf((l:Seq[(String, Integer)]) => l.map(x => x._2))
+    df_sc.withColumn("Best_citizen", tuple_citizen(col("Citizens")))
+      .withColumn("Best_citizen", best_citizen(col("Best_citizen")))
+      .withColumn("Score", score(col("Best_citizen")))
+      .orderBy(desc("Score"))
+      .select("id", "location", "Date", "Best_citizen", "Score")
       .show()
   }
 
   def getTimestamp(df: DataFrame) : DataFrame = {
-    df.withColumn("Timestamp", from_unixtime(col("Date"), "yyyy-MM-dd HH:mm:ss"))
-      .withColumn("week_day_abb", date_format(col("Timestamp"), "E"))
+    val df1 = getScore(df)
+    val df2 = df1.withColumn("Timestamp", from_unixtime(col("Date"), "yyyy-MM-dd HH:mm:ss"))
+      .withColumn("week_day", date_format(col("Timestamp"), "E"))
+    df2.where(col("PeaceScore") < 50).groupBy("week_day").count()
   }
 }

@@ -1,13 +1,49 @@
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{array, asc, col, date_format, desc, explode, from_unixtime, lit, udf}
+import com.google.gson._
+import org.apache.spark.sql.functions.from_json
+import org.apache.spark.sql.types._
+
+import scala.io.Source
 
 object Utils {
+
+  case class Message (
+                       id : String,
+                       location : String,
+                       Date : Long,
+                       Citizens : Array[Citizen],
+                       Words : Array[String]
+                     )
+
   case class Citizen(
                       Name : String,
                       FirstName : String,
                       Login : String,
                       PeaceScore : Int
                     )
+
+  def jsonToClass(df: DataFrame): DataFrame = {
+    val schema = StructType(Seq(
+      StructField("id", StringType, true), StructField("location", StringType, true), StructField("Date", LongType, true), StructField("Citizens", StructType(Seq(
+        StructField("Name", StringType, true), StructField("FirstName", StringType, true), StructField("Login", StringType, true), StructField("PeaceScore", IntegerType, true))
+      ), true), StructField("Words", StructType(Seq(StructField("words", StringType, true))))
+    ))
+    val gson = new Gson()
+    val idUdf = udf((l:Seq[String]) => l.map(x => x.toString).map(x => x.substring(1, x.length -1)).map(x => gson.fromJson(x, classOf[Message])))
+    //val url = ClassLoader.getSystemResource("schema.json")
+    //val schemaSource = Source.fromFile(url.getFile).getLines.mkString
+    //val schemaFromJson = DataType.fromJson(schemaSource).asInstanceOf[StructType]
+
+    //df.withColumn("Messages", idUdf(col("value")))
+    //val df2 = df.withColumn("jsonData", from_json(col("value"), schemaFromJson))
+      //.withColumn("id", col("jsonData.id"))
+      //.withColumn("location", col("jsonData.location"))
+      //.withColumn("Date", col("jsonData.Date"))
+      //.withColumn("Citizens", col("jsonData.Citizens"))
+    //println("")
+    df
+  }
 
   def wordCount(df: DataFrame): Unit = {
     println("Top 20 most used words :")

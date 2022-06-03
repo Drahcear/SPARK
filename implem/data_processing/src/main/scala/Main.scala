@@ -1,5 +1,6 @@
 import Utils._
 import org.apache.avro.Schema
+import org.apache.hadoop.shaded.com.google.gson.Gson
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.types._
@@ -26,20 +27,31 @@ object Main {
     val df = sparkSession.read
       .option("header", true)
       .csv(s"wasbs://${containerName}@${storageAccountName}.blob.core.windows.net/${input_blob_path}")
-    df.show()
 
-    wordCount(df)
+    val schema2 = StructType(Seq(
+      StructField("id", StringType, true), StructField("location", StringType, true), StructField("Date", LongType, true), StructField("Citizens", StructType(Seq(
+        StructField("Name", StringType, true), StructField("FirstName", StringType, true), StructField("Login", StringType, true), StructField("PeaceScore", IntegerType, true))
+      ), true), StructField("Words", StructType(Seq(StructField("word", StringType, true))))
+    ))
 
-    getScore(df).show()
+    val gson = new Gson()
+    val list = df.select("value").collect.toList.map(x => x.toString).map(x => x.substring(1, x.length -1)).map(x => gson.fromJson(x, classOf[Message]))
+    val df2 = sparkSession.createDataFrame(list)
+    df2.show()
+    //val df2 = sparkSession.createDataFrame(sparkSession.sparkContext.parallelize(df.select("value").collect().toSeq.take(1)), schema2)
 
-    worstPeaceScoreLocation(df)
+    wordCount(df2)
 
-    getSummary(df)
+    getScore(df2).show()
 
-    getBadCitizen(df)
+    worstPeaceScoreLocation(df2)
 
-    getGoodCitizen(df)
+    getSummary(df2)
 
-    getTimestamp(df).show()
+    getBadCitizen(df2)
+
+    getGoodCitizen(df2)
+
+    getTimestamp(df2).show()
   }
 }

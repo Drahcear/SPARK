@@ -3,7 +3,7 @@ import org.apache.spark.sql.streaming.Trigger
 
 object StreamProcessing{
     def main(args: Array[String]): Unit = {
-        val topic = "DroneStream"
+        val topic = "StoredMessage"
         val bootstrapServer = "localhost:9092"
 
         val inputBlobPath = "topics/Demo"

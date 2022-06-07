@@ -4,8 +4,9 @@ import org.apache.kafka.streams.{KafkaStreams, StreamsBuilder, StreamsConfig}
 import org.apache.kafka.streams.kstream.Printed
 
 import java.util.Properties
-object DroneSteam extends App {
+object DroneSteam {
 
+def initStream() {
   val props: Properties = {
     val p = new Properties()
     p.put(StreamsConfig.APPLICATION_ID_CONFIG, "DroneMessage")
@@ -19,10 +20,13 @@ object DroneSteam extends App {
   val textLines: KStream[String, String] = builder.stream[String, String]("DroneStream")
   val sysout = Printed
     .toSysOut[String, String]
-    .withLabel("customerStream")
+    .withLabel("a")
   textLines.print(sysout)
+  textLines.to("StoredMessage")
   val streams: KafkaStreams = new KafkaStreams(builder.build(), props)
   streams.start()
   println("ready")
+
+}
 }
 

@@ -1,10 +1,5 @@
 import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.functions.{array, asc, col, date_format, desc, explode, from_unixtime, lit, udf}
-import com.google.gson._
-import org.apache.spark.sql.functions.from_json
-import org.apache.spark.sql.types._
-
-import scala.io.Source
+import org.apache.spark.sql.functions.{asc, col, date_format, desc, from_unixtime, udf}
 
 object Utils {
 
@@ -22,28 +17,6 @@ object Utils {
                       Login : String,
                       PeaceScore : Int
                     )
-
-  def jsonToClass(df: DataFrame): DataFrame = {
-    val schema = StructType(Seq(
-      StructField("id", StringType, true), StructField("location", StringType, true), StructField("Date", LongType, true), StructField("Citizens", StructType(Seq(
-        StructField("Name", StringType, true), StructField("FirstName", StringType, true), StructField("Login", StringType, true), StructField("PeaceScore", IntegerType, true))
-      ), true), StructField("Words", StructType(Seq(StructField("words", StringType, true))))
-    ))
-    val gson = new Gson()
-    val idUdf = udf((l:Seq[String]) => l.map(x => x.toString).map(x => x.substring(1, x.length -1)).map(x => gson.fromJson(x, classOf[Message])))
-    //val url = ClassLoader.getSystemResource("schema.json")
-    //val schemaSource = Source.fromFile(url.getFile).getLines.mkString
-    //val schemaFromJson = DataType.fromJson(schemaSource).asInstanceOf[StructType]
-
-    //df.withColumn("Messages", idUdf(col("value")))
-    //val df2 = df.withColumn("jsonData", from_json(col("value"), schemaFromJson))
-      //.withColumn("id", col("jsonData.id"))
-      //.withColumn("location", col("jsonData.location"))
-      //.withColumn("Date", col("jsonData.Date"))
-      //.withColumn("Citizens", col("jsonData.Citizens"))
-    //println("")
-    df
-  }
 
   def wordCount(df: DataFrame): Unit = {
     println("Top 20 most used words :")
@@ -85,12 +58,12 @@ object Utils {
 
   def getBadCitizen(df: DataFrame): Unit = {
     val df1 = getScore(df)
-    val df_sc = getScore(df1)
-    val tuple_citizen = udf((l:Seq[Citizen]) => l.map(x => (x.Login, x.PeaceScore)))
-    val worst_citizen = udf((l:Seq[(String, Integer)]) => Array(l.minBy(_._2)))
+    val dfSC = getScore(df1)
+    val tupleCitizen = udf((l:Seq[Citizen]) => l.map(x => (x.Login, x.PeaceScore)))
+    val worstCitizen = udf((l:Seq[(String, Integer)]) => Array(l.minBy(_._2)))
     val score = udf((l:Seq[(String, Integer)]) => l.map(x => x._2))
-    df_sc.withColumn("Worst_citizen", tuple_citizen(col("Citizens")))
-      .withColumn("Worst_citizen", worst_citizen(col("Worst_citizen")))
+    dfSC.withColumn("Worst_citizen", tupleCitizen(col("Citizens")))
+      .withColumn("Worst_citizen", worstCitizen(col("Worst_citizen")))
       .withColumn("Score", score(col("Worst_citizen")))
       .orderBy(asc("Score"))
       .select("id", "location", "Date", "Worst_citizen", "Score")
@@ -99,12 +72,12 @@ object Utils {
 
   def getGoodCitizen(df: DataFrame): Unit = {
     val df1 = getScore(df)
-    val df_sc = getScore(df1)
-    val tuple_citizen = udf((l:Seq[Citizen]) => l.map(x => (x.Login, x.PeaceScore)))
-    val best_citizen = udf((l:Seq[(String, Integer)]) => Array(l.maxBy(_._2)))
+    val dfSC = getScore(df1)
+    val tupleCitizen = udf((l:Seq[Citizen]) => l.map(x => (x.Login, x.PeaceScore)))
+    val bestCitizen = udf((l:Seq[(String, Integer)]) => Array(l.maxBy(_._2)))
     val score = udf((l:Seq[(String, Integer)]) => l.map(x => x._2))
-    df_sc.withColumn("Best_citizen", tuple_citizen(col("Citizens")))
-      .withColumn("Best_citizen", best_citizen(col("Best_citizen")))
+    dfSC.withColumn("Best_citizen", tupleCitizen(col("Citizens")))
+      .withColumn("Best_citizen", bestCitizen(col("Best_citizen")))
       .withColumn("Score", score(col("Best_citizen")))
       .orderBy(desc("Score"))
       .select("id", "location", "Date", "Best_citizen", "Score")

@@ -4,7 +4,7 @@ import org.apache.kafka.common.serialization.StringSerializer
 import java.util.Properties
 object Producer {
 
-  def send(RawMessage : String, Key : String) :Unit = {
+  def send(rawMessage : String, Key : String) :Unit = {
     val kafkaProducerProps: Properties = {
       val props = new Properties()
       props.put("bootstrap.servers", "localhost:9092")
@@ -14,7 +14,7 @@ object Producer {
     }
 
     val producer = new KafkaProducer[String, String](kafkaProducerProps)
-    producer.send(new ProducerRecord[String, String]("DroneStream", Key, RawMessage))
+    producer.send(new ProducerRecord[String, String]("DroneStream", Key, rawMessage))
     producer.close()
   }
 }

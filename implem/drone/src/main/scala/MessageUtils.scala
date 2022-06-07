@@ -1,15 +1,5 @@
-import java.util.Properties
 import com.google.gson._
-import org.apache.avro.Schema
-import org.apache.avro.generic.GenericData
-import io.confluent.kafka.serializers.KafkaAvroSerializer
-import org.apache.avro.generic.GenericRecord
-import org.apache.avro.io.{BinaryEncoder, EncoderFactory}
-import org.apache.avro.specific.SpecificDatumWriter
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord, RecordMetadata}
-import org.apache.kafka.common.serialization.StringDeserializer
 
-import java.io.ByteArrayOutputStream
 
 object MessageUtils {
 

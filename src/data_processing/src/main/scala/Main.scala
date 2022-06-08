@@ -1,14 +1,21 @@
 import Utils._
-
 import org.apache.hadoop.shaded.com.google.gson.Gson
-import org.apache.spark.sql.{SparkSession}
+import org.apache.spark.sql.SparkSession
+import com.typesafe.config.{Config, ConfigFactory}
+
+import java.io.File
 
 object Main {
   def main(args: Array[String]): Unit = {
-    val inputBlobPath = "topics/Demo/*.csv"
-    val storageAccountName = "peaceland"
-    val storageKeyValue = "T+Q1Ryvhx2MtghOSccN9oUeQwRM4I9GwiBy6L/6K2r2i98WkADBBa+KEA/t6aJO6Ii7nJU6+p4yPSgJppnG9YQ=="
-    val containerName = "data"
+    val conf = ConfigFactory.parseFile(new File("src/main/ressources/application.conf"))
+    val bootstrapServer = "localhost:9092"
+
+    val inputBlobPath = conf.getString("app.inputBlobPath")
+    
+    val storageAccountName = conf.getString("app.storageAccountName")
+    val storageKeyValue = conf.getString("app.key")
+    val containerName = conf.getString("app.containerName")    
+    
     val sparkSession = SparkSession.builder()
       .master("local")
       .appName("DataProcessing")

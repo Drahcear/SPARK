@@ -1,16 +1,21 @@
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.streaming.Trigger
+import com.typesafe.config.{Config, ConfigFactory}
+
+import java.io.File
+
 
 object StreamProcessing{
     def main(args: Array[String]): Unit = {
-        val topic = "StoredMessage"
+        val conf = ConfigFactory.parseFile(new File("src/main/ressources/application.conf"))
+        val topic = conf.getString("app.topic")
         val bootstrapServer = "localhost:9092"
 
-        val inputBlobPath = "topics/Demo"
-        val inputSparkCheckpoint = "topics/Checkpoints"
-        val storageAccountName = "peaceland"
-        val storageKeyValue = "T+Q1Ryvhx2MtghOSccN9oUeQwRM4I9GwiBy6L/6K2r2i98WkADBBa+KEA/t6aJO6Ii7nJU6+p4yPSgJppnG9YQ=="
-        val containerName = "data"
+        val inputBlobPath = conf.getString("app.inputBlobPath")
+        val inputSparkCheckpoint = conf.getString("app.inputSparkCheckpoint")
+        val storageAccountName = conf.getString("app.storageAccountName")
+        val storageKeyValue = conf.getString("app.key")
+        val containerName = conf.getString("app.containerName")
 
 
         val sparkSession = SparkSession.builder()

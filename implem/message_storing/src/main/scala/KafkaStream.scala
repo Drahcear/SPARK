@@ -3,6 +3,7 @@ import org.apache.kafka.streams.kstream.KStream
 import org.apache.kafka.streams.{KafkaStreams, StreamsBuilder, StreamsConfig}
 import org.apache.kafka.streams.kstream.Printed
 
+import java.time.Duration
 import java.util.Properties
 object DroneSteam {
 
@@ -26,6 +27,7 @@ def initStream() {
   val streams: KafkaStreams = new KafkaStreams(builder.build(), props)
   streams.start()
   println("ready")
+  Thread.sleep(1000000000) // Sans Thread sleep, sbt run termine instantanément le programme alors que intellij fonctionne sans.
 
 }
 }

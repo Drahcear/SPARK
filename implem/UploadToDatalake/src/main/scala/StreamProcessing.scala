@@ -35,7 +35,7 @@ object StreamProcessing{
           .option("checkpointLocation", s"wasbs://${containerName}@${storageAccountName}.blob.core.windows.net/${inputSparkCheckpoint}")
           .option("header", "true")
           .option("failOnDataLoss", false)
-          .trigger(Trigger.ProcessingTime("15 seconds"))
+          .trigger(Trigger.ProcessingTime("30 seconds"))
           .start()
 
         query.awaitTermination()

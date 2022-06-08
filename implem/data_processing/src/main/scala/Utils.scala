@@ -24,6 +24,7 @@ object Utils {
       .collect()
       .map(x => x.getList(0).toArray())
       .flatMap(x => x.map(y => (y, 1)))
+      .filter(x => x._1.toString.length() > 3)
       .groupMapReduce(_._1)(_ => 1)(_+_)
       .toSeq.sortWith(_._2 > _._2)
       .take(20)

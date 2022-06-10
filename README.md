@@ -1,8 +1,8 @@
 ## Description
 Ceci est le repo git pour le projet SPARK de SCIA 2023 de:
-- Richard LAY (richard.lay)
-- Jacky WU (jacky.wu)
-- Steven Tien (steven.tien)
+- Richard LAY (richard.lay) Drahcear
+- Jacky WU (jacky.wu) WUJacky/Akunamatata
+- Steven Tien (steven.tien) steventien1
 
 
 Ce projet est un programme scalable, fault tolerant écrit en scala.</br></br>
